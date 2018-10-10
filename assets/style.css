@@ -1,0 +1,78 @@
+
+body{
+    font-family: arial;
+    margin: 0;
+}
+
+nav{
+    background: #6C1D45;
+    background: -webkit-linear-gradient(left, #D22630 , #6C1D45);
+    background: -o-linear-gradient(right, #D22630, #6C1D45);
+    background: -moz-linear-gradient(right, #D22630, #6C1D45);
+    background: linear-gradient(to right, #D22630 , #6C1D45);
+    padding: 20px;
+}
+
+nav ul{
+    max-width: 960px;
+    margin: 10px auto;
+    padding-inline-start: 0;
+}
+
+nav ul li{
+    list-style: none;
+    display: inline-block;
+    text-indent: 0;
+    margin-right: 10px;
+}
+
+nav ul li a:hover{
+    background:rgb(133, 44, 65);
+}
+
+nav ul li a{
+    background:rgba(255, 213, 223, 0.562);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 5px;
+}
+
+
+header{
+    max-width: 960px;
+    margin: 15px auto;
+    padding: 0 5px;
+    color: #333;
+}
+
+main {
+    width: 50%;
+    margin: 0px auto;
+    max-width: 50%;
+    min-height: 400px;
+}
+
+main p{
+    word-break: break-all ;
+    margin: 2px;
+    margin-bottom: 10px;
+    border: 1px solid #333;
+}
+
+select{
+    display: block;
+}
+
+.axway-btn{
+    background: rgb(255, 72, 59);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+}
+
+select{
+    padding: 10px;    
+}
+select options{
+    padding: 10px;
+}
