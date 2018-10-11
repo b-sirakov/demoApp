@@ -1,13 +1,18 @@
 const router = require("express").Router();
 const request = require("request");
+const fs = require('fs');
 
 function authCheck(req,res,next){
+
+  console.log();
+  console.log("Auth: "+getTokenCookie(req));
 
   if( !( req.header("token")||getTokenCookie(req) ) ){
     //if user has auth token
     res.redirect("/auth/login");
   }else{
     console.log("authcheck here");
+    console.log();
     //if logged in
     next();
   }
@@ -77,14 +82,56 @@ router.get("/case/:id",authCheck, function(req, res) {
   startRequest(options,res);
 });
 
+////////////////////////////////////////////////////////////////////
+router.get("/attachment",authCheck, function(req, res) {
+  console.log("TOVA E ATTACHMENT");
+  console.log(req.header("token"));
+  // Set the headers
+
+  for(prop in req.query){
+    console.log("Printing in attachment router: "+prop+"= "+req.query[prop]);
+  }
+  
+  let options = configRequest(getTokenCookie(req),"/attachment","GET",("?"+"caseId="+req.query.caseId+"&"+"attachmentId="+req.query.attachmentId) ) ;
+  request(options).pipe(res);
+
+  // request(options, function(error, response, body) {
+  //   if (!error && response.statusCode == 200) {
+  //     let fileContent = body;
+
+  //     // The absolute path of the new file with its name
+  //     for(prop in response.headers){
+  //       console.log(prop+": "+response.headers[prop])
+  //     }
+  //     let fileName = response.headers["content-disposition"].split(";")[1].split("=")[1].trim();
+  //     let filePath = __dirname + fileName;
+
+  //     fs.writeFile(filePath, fileContent, (err) => {
+  //     if (err) throw err;
+
+  //     res.download(filePath,fileName,function(err){
+  //       if(err) throw err;
+
+  //       fs.unlinkSync(filePath);
+  //       console.log("The file was succesfully transfered!");
+  //     });
+  //     }); 
+  //     // Print out the response body
+  //     console.log("Body of request "+body);
+  //   }else{
+  //     console.log("Error: "+error);
+  //   }
+  // });
+});
+
 function startRequest(options,res){
   request(options, function(error, response, body) {
     if (!error && response.statusCode == 200) {
       // Print out the response body
-      // console.log(body);
+      // console.log("Body of request "+body);
       res.send(body);
     }else{
-      console.log(error);
+      console.log("Error: "+error);
     }
   });
 }
