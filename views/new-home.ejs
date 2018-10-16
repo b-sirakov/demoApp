@@ -134,6 +134,43 @@
                         },
                         success: function (responseJSON, status) {
                            $("main").prepend("<p>"+responseJSON+"</p>");
+                           let attachmentsArr = JSON.parse(responseJSON).attachments;
+                           let caseId = JSON.parse(responseJSON).caseNumber;
+                           
+                           attachmentsArr.forEach(element=>{
+                            //   $("main").prepend("<a id="+element.id+" href='/'>"+element.name+"</a>");
+                            $("main").prepend("<a id="+element.id+" href=http://localhost:3000/api/attachment?caseId="
+                                +caseId+"&attachmentId="+element.id+">"+element.name+"</a>");
+                           });
+
+                           $("main").click(function(e){
+                               let target = e.target;
+                               
+                            //    let attachmentId = target.id;
+                            //    e.preventDefault();
+                            //    console.log(target);
+                            //    console.log(target.tagName);
+                            //    console.log("print from a click: "+attachmentId);
+
+                            //    if(target.tagName.toLowerCase()==="a"){
+
+                            //     console.log("Click na a tag")
+                            //     $.ajax({
+                            //         url: `http://localhost:3000/api/attachment?caseId=${caseId}&attachmentId=${attachmentId}`,
+                            //         type: "GET",
+                            //         headers: {
+                            //             token: tokenValue
+                            //         },
+                            //         success: function (response, status) {
+                            //             console.log("Res File: "+ response);
+                            //         },
+                            //         error: function(xhr, status, error){
+                            //            console.log("Error: "+error);
+                            //         }
+                            //     })
+                            //    }
+                           });
+
                         },
                         error: function(xhr, status, error){
                             console.log("Error: "+error);
