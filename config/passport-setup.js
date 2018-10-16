@@ -17,13 +17,9 @@ passport.use(new OAuth2Strategy({
     authorizationURL: "https://login-dev.axway.com/auth/realms/Axway/protocol/openid-connect/auth",
     tokenURL: "https://login-dev.axway.com/auth/realms/Axway/protocol/openid-connect/token",
     clientID: 'amplify-apimanager',
-    callbackURL: '/auth/axway/redirect',
-    },function(accessToken, refreshToken, profile, done){
-
-        console.log("tesrtt");
-
-        console.log(accessToken);
-        console.log(" ");
+    callbackURL: '/auth/axway/redirect'
+    }, function(accessToken, refreshToken, profile, done){
+        console.log(`accessToken = ${accessToken}`);
         done(null,accessToken);
     })
 );

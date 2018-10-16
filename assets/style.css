@@ -59,6 +59,12 @@ main p{
     border: 1px solid #333;
 }
 
+main a{
+    padding: 5px;
+    margin: 2px;
+    display: inline-block ;
+}
+
 select{
     display: block;
 }

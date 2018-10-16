@@ -11,8 +11,18 @@ const app = express();
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'react-client/my-app/build'),{index:false}) );
+const cors = require("cors");
+
+const corsOptions = {
+  origin: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true
+};
+
 
 app.set("view engine", "ejs");
+
+app.use(cors(corsOptions));
 
 app.use(
   cookieSession({
@@ -24,10 +34,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//apply routes to app
+// apply routes to app
 app.use("/auth", authRouter);
 
-//applying api routes
+// apply api routes
 app.use("/api", apiRouter);
 
 app.use('/favicon.ico', (req, res, next) => {res.status(204).end(); });
