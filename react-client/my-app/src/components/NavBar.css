@@ -1,0 +1,8 @@
+.navigation {
+    background: #6C1D45;
+    background: -webkit-linear-gradient(left, #D22630 , #6C1D45);
+    background: -o-linear-gradient(right, #D22630, #6C1D45);
+    background: -moz-linear-gradient(right, #D22630, #6C1D45);
+    background: linear-gradient(to right, #D22630 , #6C1D45);
+    padding: 20px;
+}
