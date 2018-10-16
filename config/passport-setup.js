@@ -4,7 +4,7 @@ const keys = require("./keys");
 const OAuth2Strategy = require("passport-oauth2").Strategy;
 
 passport.serializeUser(function(token,done){
-    // console.log("des: "+token);
+    // console.log("ser: "+token);
     done(null,token);
 });
 

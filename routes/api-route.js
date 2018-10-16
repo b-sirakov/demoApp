@@ -95,33 +95,6 @@ router.get("/attachment",authCheck, function(req, res) {
   let options = configRequest(getTokenCookie(req),"/attachment","GET",("?"+"caseId="+req.query.caseId+"&"+"attachmentId="+req.query.attachmentId) ) ;
   request(options).pipe(res);
 
-  // request(options, function(error, response, body) {
-  //   if (!error && response.statusCode == 200) {
-  //     let fileContent = body;
-
-  //     // The absolute path of the new file with its name
-  //     for(prop in response.headers){
-  //       console.log(prop+": "+response.headers[prop])
-  //     }
-  //     let fileName = response.headers["content-disposition"].split(";")[1].split("=")[1].trim();
-  //     let filePath = __dirname + fileName;
-
-  //     fs.writeFile(filePath, fileContent, (err) => {
-  //     if (err) throw err;
-
-  //     res.download(filePath,fileName,function(err){
-  //       if(err) throw err;
-
-  //       fs.unlinkSync(filePath);
-  //       console.log("The file was succesfully transfered!");
-  //     });
-  //     }); 
-  //     // Print out the response body
-  //     console.log("Body of request "+body);
-  //   }else{
-  //     console.log("Error: "+error);
-  //   }
-  // });
 });
 
 function startRequest(options,res){

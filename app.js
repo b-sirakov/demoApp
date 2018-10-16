@@ -2,6 +2,7 @@ const express = require("express");
 const authRouter = require("./routes/auth-route.js");
 const apiRouter = require("./routes/api-route.js");
 const cookieSession = require("cookie-session");
+const passportSetup = require("./config/passport-setup.js");
 const passport = require("passport");
 const keys = require("./config/keys");
 const path = require("path");
@@ -9,8 +10,6 @@ const request = require("request");
 
 const app = express();
 
-// Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, 'react-client/my-app/build'),{index:false}) );
 const cors = require("cors");
 
 const corsOptions = {
@@ -19,10 +18,10 @@ const corsOptions = {
   credentials: true
 };
 
-
-app.set("view engine", "ejs");
-
 app.use(cors(corsOptions));
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'react-client/my-app/build'),{index:false}) );
 
 app.use(
   cookieSession({
@@ -43,13 +42,6 @@ app.use("/api", apiRouter);
 app.use('/favicon.ico', (req, res, next) => {res.status(204).end(); });
 
 app.get("/welcome",function(req,res,next){
-  console.log("Req: "+req.rawHeaders);
-  // for(prop in req.hea){
-  //   console.log(prop+"->"+res.header("redirect")[prop]);
-  // }
-  console.log("Res: "+res.getHeaderNames());
-
-  console.log("QUERY STR: "+req.query.isRedirected);
   authCheck(req,res,next);
 });
 
