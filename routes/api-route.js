@@ -5,7 +5,7 @@ function authCheck(req,res,next){
 
   if( !( req.header("token")||getTokenCookie(req) ) ){
     //if user has auth token
-    res.redirect("/auth/login");
+    res.redirect("/");
   }else{
     console.log("authcheck here");
     //if logged in
@@ -77,6 +77,16 @@ router.get("/case/:id",authCheck, function(req, res) {
   startRequest(options,res);
 });
 
+///////////////////////////////////////////////////////////////////
+router.post("/case",authCheck, function(req, res) {
+  console.log("TOVA E CASE");
+  console.log(req.header("token"));
+  // Set the headers
+
+  let options = configRequest(req.header("token"),"/case","GET","/"+req.params.id);
+  startRequest(options,res);
+});
+
 function startRequest(options,res){
   request(options, function(error, response, body) {
     if (!error && response.statusCode == 200) {
@@ -95,9 +105,6 @@ function configRequest(token,route,method,queryString){
     gzip: true,
     json: true
   };
-
-  // queryString = "?"+"sac"+queryString.sac;
-  // if("?"===queryString) queryString = "";
 
   console.log("https://sphereapi-apimanager.lab.sofi.axway.int:8065/sphere/api/v1"+route+queryString);
 
