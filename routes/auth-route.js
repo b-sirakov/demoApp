@@ -1,20 +1,20 @@
 const router = require("express").Router();
 const passport = require("passport");
 
-//auth login
+// auth login
 router.get("/login", function(req, res, next) {
+  console.log("Responding from '/auth/login'");
   res.render("login");
 });
 
-//auth logout
+// auth logout
 router.get("/logout", function(req, res, next) {
   req.logout();
   res.clearCookie("token");
-  res.redirect("/");
-  res.send("logging out");
+  res.redirect("http://localhost:3000/");
 });
 
-// auth with
+// auth with Axway
 router.get(
   "/axway",
   passport.authenticate("oauth2", {
@@ -24,10 +24,8 @@ router.get(
 );
 
 router.get("/axway/redirect", passport.authenticate("oauth2"), function(req,res) {
-
   res.cookie("token", req.user);
-  res.redirect("/api/home",);
-  // res.render("new-home",{token: req.user});
+  res.redirect('http://localhost:3000/welcome')
 });
 
 module.exports = router;

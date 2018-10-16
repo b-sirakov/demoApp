@@ -5,14 +5,20 @@ const passportSetup = require("./config/passport-setup.js");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const keys = require("./config/keys");
+const path = require("path");
+const cors = require("cors");
+
+const corsOptions = {
+  origin: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true
+};
 
 const app = express();
 
-//set up view engine
-
-app.use(express.static("assets"));
-
 app.set("view engine", "ejs");
+
+app.use(cors(corsOptions));
 
 app.use(
   cookieSession({
@@ -24,18 +30,20 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//apply routes to app
+// apply routes to app
 app.use("/auth", authRouter);
 
-//applying api routes
+// apply api routes
 app.use("/api", apiRouter);
 
-//create home routes
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'react-client/my-app/build')));
 
-app.get("/", function(req, res, next) {
-  res.render("home");
-});
+// Anything that doesn't match the above, send back index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/react-client/my-app/build/index.html'));
+})
 
-app.listen(3000, function() {
-  console.log("now listening on port 3000");
+app.listen(3001, function() {
+  console.log("Now listening on port 3001");
 });
