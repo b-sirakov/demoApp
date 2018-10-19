@@ -24,8 +24,8 @@ class NavBar extends Component {
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav pullRight>
-                            <NavItem eventKey={1} href="http://localhost:3001/auth/axway">
-                                Log in
+                            <NavItem eventKey={1} href={this.props.urlAndText.url}>
+                                {this.props.urlAndText.text}
                             </NavItem>
                         </Nav>
                     </Navbar.Collapse>
