@@ -30,7 +30,7 @@ router.get("/axway/redirect", passport.authenticate("oauth2"), function(req,res)
   console.log();
   res.cookie("token", req.user);
   // res.set("isRedirect","true");
-  res.redirect("/welcome?isRedirected=true");
+  res.redirect("/welcome");
 });
 
 module.exports = router;
