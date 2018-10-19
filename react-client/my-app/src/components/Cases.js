@@ -12,9 +12,9 @@ class Cases extends Component {
         const token = tokenHelper.getTokenCookie();
         axios.get(`http://localhost:3001/api/case`, { 'headers': { 'token': token }})
             .then(res => {
-                const Cases = r-es.data;
+                const Cases = res.data;
                 this.setState({ Cases });
-            })
+            });
     }
     render() {
         return (

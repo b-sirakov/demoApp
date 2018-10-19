@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const request = require("request");
-const fs = require('fs');
+const multer = require("multer");
+const upload = multer();
 
 function authCheck(req,res,next){
 
@@ -96,6 +97,65 @@ router.get("/attachment",authCheck, function(req, res) {
   request(options).pipe(res);
 
 });
+
+///////////////////////////////////////////////////////////////////
+router.post("/case", authCheck , upload.any() , function(req, res) {
+  console.log("TOVA E CASE POST");
+  let token = getTokenCookie(req);
+  console.log(token);
+
+let caseFromReq = req.body;
+
+let caseObj = {
+  description: "",
+   environment: "blabla",
+   product:{  
+      id: caseFromReq.id,
+      os:{ id: caseFromReq.os},
+      version:{ id: ""}
+   },
+   sac: caseFromReq.sac,
+   severity: "fake123",
+   subject: ""
+}
+
+files = req.files;
+
+let headers = {
+  Authorization: "Bearer " + token,
+  gzip: true,
+  json: true
+};
+
+let formData = {}
+
+formData['initializer'] =  { value: JSON.stringify(caseObj) , options: {contentType: "application/json"} };
+formData.attachment = [];
+
+for(let i=0;i<files.length;i++){
+  let file = files[i];
+
+  formData.attachment.push({
+      value: file.buffer ,
+      options: {
+        filename: file.originalname
+      }
+  })
+
+}
+
+request.post({url:'https://sphereapi-apimanager.lab.sofi.axway.int:8065/sphere/api/v1/case',"formData":formData, headers:headers, agentOptions: {rejectUnauthorized: false}}, function optionalCallback(err, httpResponse, body) {
+  if (err) {
+    res.status(500).json({status:500,message:"Something weng wrong"});
+    return console.error('upload failed:', err);
+  }
+  console.log("Server Status: " + httpResponse.statusMessage);
+  console.log("Body of response"+ httpResponse.body);
+  res.status(httpResponse.statusCode).json({status:httpResponse.statusCode, message: httpResponse.statusMessage});
+});
+
+});
+
 
 function startRequest(options,res){
   request(options, function(error, response, body) {

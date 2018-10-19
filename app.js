@@ -41,6 +41,10 @@ app.use("/api", apiRouter);
 
 app.use('/favicon.ico', (req, res, next) => {res.status(204).end(); });
 
+app.get("/createCase",function(req,res,next){
+  authCheck(req,res,next);
+});
+
 app.get("/welcome",function(req,res,next){
   authCheck(req,res,next);
 });
