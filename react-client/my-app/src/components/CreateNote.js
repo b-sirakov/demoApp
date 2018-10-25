@@ -3,7 +3,7 @@ import NavBar from './NavBar';
 import { rejects } from 'assert';
 import LoadingAnim from './LoadingAnim';
 
-class CreateCase extends Component {
+class CreateNote extends Component {
 
     constructor() {
         super();
@@ -11,8 +11,7 @@ class CreateCase extends Component {
         this.handleChangeOnFile = this.handleChangeOnFile.bind(this);
         this.state = {
             numOfFiles : 1,
-            isLoading : false,
-            isSuccess : false
+            isLoading : false
         };
     }
 
@@ -21,39 +20,33 @@ class CreateCase extends Component {
         this.setState({numOfFiles: this.state.numOfFiles+1});
     }
     
-    handleSubmit(event) {
+    handleSubmit(event){
         event.preventDefault();
         const data = new FormData(event.target);
         
+        const self = this;
         console.log("Printing from handleSubmit");
 
         this.setState({isLoading: true});
-        fetch('/api/case', {
+        fetch('/api/note', {
           method: 'POST',
           body: data,
         })
         .then(res=>{return res.json()})
         .then( response=>{
             if(response.status !=201) throw "Error";
-
-            this.setState({isLoading: false});
+            
+            self.setState({isLoading: false});
             console.log(response);
             alert(response.message);
         }).catch(function(reason){
-            this.setState({isLoading: false});
+            self.setState({isLoading: false});
             console.log(reason);
             alert("Upps something went wrong");
         });
     }
 
-    componentWillMount(){
-        
-    }
-
     render() {
-        // if (sac) { 
-
-        // }
 
         let listInputFiles = []
         for(let i=1;i<=this.state.numOfFiles;i++){
@@ -71,9 +64,8 @@ class CreateCase extends Component {
 
         //adding style for hiding/showing
         let styleForm = this.state.isLoading ? {display: "none"} : {};
-        let caseId = 40
-        return (
 
+        return (
             <div>
                 <NavBar urlAndText={{url: "http://localhost:3001/auth/logout", text: "Log out"}}/>
                 <h1>This is CreateCase page</h1>
@@ -81,28 +73,11 @@ class CreateCase extends Component {
 
                 {this.state.isLoading?<LoadingAnim type="spinningBubbles" color="#000" ></LoadingAnim>:null}
 
-                <form action="http://localhost:3001/api/case" method="post" style={styleForm} onSubmit={this.handleSubmit} enctype="multipart/form-data">
+                <form action="http://localhost:3001/api/note" method="post" style={styleForm} onSubmit={this.handleSubmit} enctype="multipart/form-data">
                     <p><input type="text" name="subject" placeholder="subject" required/></p>
                     <p><textarea name="description" placeholder="description" required/></p>
-                    <p>
-                        <select name="environment">
-                            <option value="Production">Production</option>
-                            <option value="Non-production">Non-production</option>
-                            <option value="Unknown">Unknown</option>
-                        </select>
-                    </p>
-                    <p>
-                        <select name="severity">
-                            <option value="Urgent">Urgent</option>
-                            <option value="Important">Important</option>
-                            <option value="Minor">Minor</option>
-                        </select>
-                    </p>
-                    <label>Product</label>
-                    <p><input type="text" name="id" value="a1E9E000000okpTUAQ" /></p>
-                    <p><input type="text" name="os" value="a1D9E000001UpYsUAK" /></p>
-                    <p><input type="text" name="version" value="a1F9E000000iMDzUAM" /></p>
-                    <p><input type="text" name="sac" value={caseId} /></p>
+                    <label>CaseId</label>
+                    <p><input type="text" name="caseId" value="00958356" /></p>
                     {/* <p><input type="file" name="file1"/></p>
                     <p><input type="file" name="file2"/></p> */}
                     {listInputFiles}
@@ -113,4 +88,4 @@ class CreateCase extends Component {
     }
 }
 
-export default CreateCase;
+export default CreateNote;
