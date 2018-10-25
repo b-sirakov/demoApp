@@ -35,10 +35,6 @@ function getTokenCookie(req){
   }
 }
 
-router.get("/home", authCheck, function(req, res) {
-  res.render("new-home");
-});
-
 /////////////////////////////////////////////////////////////
 router.get("/account", authCheck, function(req, res) {
   console.log("TOVA E ACCOUNT");
@@ -100,60 +96,178 @@ router.get("/attachment",authCheck, function(req, res) {
 
 ///////////////////////////////////////////////////////////////////
 router.post("/case", authCheck , upload.any() , function(req, res) {
-  console.log("TOVA E CASE POST");
+  console.log("TOVA E CASE POST..");
   let token = getTokenCookie(req);
   console.log(token);
 
-let caseFromReq = req.body;
+  let caseFromReq = req.body;
+  let errMsg = areThereEmpyFields(caseFromReq);
 
-let caseObj = {
-  description: "",
-   environment: "blabla",
-   product:{  
+  if(errMsg){
+    res.status(400).json({status: 400,message: errMsg});
+    console.log(errMsg);
+    return ;
+  }
+
+  let caseObj = {
+    description: caseFromReq.description,
+    environment: caseFromReq.environment,
+    product:{  
       id: caseFromReq.id,
       os:{ id: caseFromReq.os},
-      version:{ id: ""}
-   },
-   sac: caseFromReq.sac,
-   severity: "fake123",
-   subject: ""
-}
-
-files = req.files;
-
-let headers = {
-  Authorization: "Bearer " + token,
-  gzip: true,
-  json: true
-};
-
-let formData = {}
-
-formData['initializer'] =  { value: JSON.stringify(caseObj) , options: {contentType: "application/json"} };
-formData.attachment = [];
-
-for(let i=0;i<files.length;i++){
-  let file = files[i];
-
-  formData.attachment.push({
-      value: file.buffer ,
-      options: {
-        filename: file.originalname
-      }
-  })
-
-}
-
-request.post({url:'https://sphereapi-apimanager.lab.sofi.axway.int:8065/sphere/api/v1/case',"formData":formData, headers:headers, agentOptions: {rejectUnauthorized: false}}, function optionalCallback(err, httpResponse, body) {
-  if (err) {
-    res.status(500).json({status:500,message:"Something weng wrong"});
-    return console.error('upload failed:', err);
+      version:{ id: caseFromReq.version}
+    },
+    sac: caseFromReq.sac,
+    severity: caseFromReq.severity,
+    subject: caseFromReq.subject
   }
-  console.log("Server Status: " + httpResponse.statusMessage);
-  console.log("Body of response"+ httpResponse.body);
-  res.status(httpResponse.statusCode).json({status:httpResponse.statusCode, message: httpResponse.statusMessage});
+
+  files = req.files;
+  console.log("TUKA SI SE LOGVAME ____-----> LENGHT: "+files.length);
+
+  let headers = {
+    Authorization: "Bearer " + token,
+    gzip: true,
+    json: true
+  };
+
+  let formData = {}
+
+  formData['initializer'] =  { value: JSON.stringify(caseObj) , options: {contentType: "application/json"} };
+  formData.attachment = [];
+
+  for(let i=0;i<files.length;i++){
+    let file = files[i];
+
+    formData.attachment.push({
+        value: file.buffer ,
+        options: {
+          filename: file.originalname
+        }
+    })
+
+  }
+
+  request.post({url:'https://sphereapi-apimanager.lab.sofi.axway.int:8065/sphere/api/v1/case',"formData":formData, headers:headers, agentOptions: {rejectUnauthorized: false}}, function optionalCallback(err, httpResponse, body) {
+    if (err) {
+      res.status(500).json({status:500,message:"Something went wrong"});
+      console.error('upload failed:', err);
+    }else{
+      console.log("Server Status: " + httpResponse.statusMessage);
+      // console.log("Body of response"+ httpResponse.body);
+      if(httpResponse.statusCode == 201){
+        res.status(201).send({status:201, message: httpResponse.statusMessage});
+      }else{
+        res.status(httpResponse.statusCode).send({status:httpResponse.statusCode, message: httpResponse.statusMessage});
+      }
+    }
+    
+  });
+
+});
+////////////////////////////////////////////////////////////////////////////
+router.post("/note", authCheck , upload.any() , function(req,res) {
+  console.log("TOVA E NOTE POST");
+
+  let token = getTokenCookie(req);
+  console.log(token);
+
+  let noteReq = req.body;
+  let errMsg = areThereEmpyFields(noteReq);
+
+  if(errMsg){
+    res.status(400).json({status: 400,message: errMsg});
+    console.log(errMsg);
+    return ;
+  }
+
+  files = req.files;
+  console.log("TUKA SI SE LOGVAME ____-----> LENGHT: "+files.length);
+
+  let headers = {
+    Authorization: "Bearer " + token,
+    gzip: true,
+    json: true
+  };
+
+  let formData = {}
+
+  console.log("wewewewew"+JSON.stringify(noteReq,null,4));
+  console.log(noteReq);
+  formData['initializer'] =  { value: JSON.stringify(noteReq) , options: {contentType: "application/json"} };
+  formData.attachment = [];
+
+  for(let i=0;i<files.length;i++){
+    let file = files[i];
+
+    formData.attachment.push({
+        value: file.buffer ,
+        options: {
+          filename: file.originalname
+        }
+    })
+
+  }
+
+  request.post({url:'https://sphereapi-apimanager.lab.sofi.axway.int:8065/sphere/api/v1/note',"formData":formData, headers:headers, agentOptions: {rejectUnauthorized: false}}, function optionalCallback(err, httpResponse, body) {
+    if (err) {
+      res.status(500).json({status:500,message:"Something went wrong"});
+      console.error('upload failed:', err);
+    }else{
+      console.log("Server Status: " + httpResponse.statusMessage);
+      // console.log("Body of response"+ httpResponse.body);
+      if(httpResponse.statusCode == 201){
+        res.status(201).send({status:201, message: httpResponse.statusMessage});
+      }else{
+        res.status(httpResponse.statusCode).send({status:httpResponse.statusCode, message: httpResponse.statusMessage});
+      }
+    }
+    
+  });
 });
 
+////////////////////////////////////////////////////////////////////////////
+router.delete("/case", authCheck , upload.any() , function(req,res) {
+  console.log("TOVA E CASE DELETE");
+
+  let token = getTokenCookie(req);
+  console.log(token);
+
+  let delReq = req.body;
+  let delReqJSON = JSON.stringify(delReq,null,4);
+  let errMsg = areThereEmpyFields(delReq);
+
+  if(errMsg){
+    res.status(400).json({status: 400,message: errMsg});
+    console.log(errMsg);
+    return ;
+  }
+
+  let headers = {
+    Authorization: "Bearer " + token,
+    gzip: true,
+    json: true,
+    'content-type': 'application/json'
+  };
+
+  console.log(JSON.stringify(delReq,null,4));
+  console.log(delReqJSON);
+
+  request.delete({url:'https://sphereapi-apimanager.lab.sofi.axway.int:8065/sphere/api/v1/case', body:delReqJSON, headers:headers, agentOptions: {rejectUnauthorized: false}}, function optionalCallback(err, httpResponse, body) {
+    if (err) {
+      res.status(500).json({status:500,message:"Something went wrong"});
+      console.error('upload failed:', err);
+    }else{
+      console.log("Server Status: " + httpResponse.statusMessage);
+      console.log("Body of response"+ httpResponse.body);
+      if(httpResponse.statusCode == 200){
+        res.status(200).send({status:200, message: httpResponse.statusMessage});
+      }else{
+        res.status(httpResponse.statusCode).send({status:httpResponse.statusCode, message: httpResponse.statusMessage});
+      }
+    }
+    
+  });
 });
 
 
@@ -189,6 +303,18 @@ function configRequest(token, route, method, queryString){
   };
 
   return options;
+}
+
+function areThereEmpyFields( caseObj ){
+  let prop;
+  let msg="";
+  for(prop in caseObj){
+    if(!caseObj[prop]){
+      msg+=prop+" field must not be empy";
+    }
+  }
+
+  return msg;
 }
 
 module.exports = router;
